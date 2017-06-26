@@ -1,15 +1,10 @@
 ---
 - name: Download Next Cloud
   get_url: url=
-  #add next_cloud_version to vars
+
 - name: Extract archive
   command: chdir=/srv/ /bin/tar xvf wordpress-{{ wp_version }}.tar.gz creates=/srv/wordpress
 
-#- name: Add group "wordpress"
-#  group: name=wordpress
-
-#- name: Add user "wordpress"
-#  user: name=wordpress group=wordpress home=/srv/wordpress/
 
 - name: Create NextCloud database
   mysql_db: name={{ next_cloud_db }} state=present
@@ -20,7 +15,7 @@
 - name: Copy NextCloud config
   template: src=nc-config.php dest=/srv/wordpress/
 
-- name: Change ownership of WordPress installation
+- name: Change ownership of NextCloud installation
   file: path=/srv/wordpress/ owner=wordpress group=wordpress state=directory recurse=yes
 
 - name: install SEManage
