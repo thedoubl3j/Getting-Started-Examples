@@ -1,7 +1,6 @@
 ---
 - name: Download Next Cloud
   get_url: url=
-  #find the correct url
   #add next_cloud_version to vars
 - name: Extract archive
   command: chdir=/srv/ /bin/tar xvf wordpress-{{ wp_version }}.tar.gz creates=/srv/wordpress
