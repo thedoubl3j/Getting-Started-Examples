@@ -5,11 +5,11 @@
 - name: Extract archive
   command: chdir=/srv/ /bin/tar xvf wordpress-{{ wp_version }}.tar.gz creates=/srv/wordpress
 
-#- name: Add group "wordpress"
-#  group: name=wordpress
+#- name: Add group "nextcloud"
+#  group: name=nextcloud
 
-#- name: Add user "wordpress"
-#  user: name=wordpress group=wordpress home=/srv/wordpress/
+#- name: Add user "nextcloud"
+#  user: name=nextcloud group=nextcloud home=/srv/nextcloud/
 
 - name: Create NextCloud database
   mysql_db: name={{ next_cloud_db }} state=present
@@ -20,8 +20,8 @@
 - name: Copy NextCloud config
   template: src=nc-config.php dest=/srv/wordpress/
 
-- name: Change ownership of WordPress installation
-  file: path=/srv/wordpress/ owner=wordpress group=wordpress state=directory recurse=yes
+- name: Change ownership of NextCloud installation
+  file: path=/srv/nextcloud/ owner=nextcloud group=nextcloud state=directory recurse=yes
 
 - name: install SEManage
   yum: pkg=policycoreutils-python state=present
