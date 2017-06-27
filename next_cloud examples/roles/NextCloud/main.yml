@@ -4,7 +4,7 @@
   #find the correct url
   #add next_cloud_version to vars
 - name: Extract archive
-  command: chdir=/srv/ /bin/tar xvf wordpress-{{ wp_version }}.tar.gz creates=/srv/wordpress
+  command: chdir=/srv/ /bin/tar xvf wordpress-{{ nc_version }}.tar.gz creates=/srv/wordpress
 
 #- name: Add group "nextcloud"
 #  group: name=nextcloud
@@ -19,7 +19,7 @@
   mysql_user: name={{ nc_db_user}} password={{ nc_db_password }} priv={{ nc_db_name }}.*:ALL host='localhost' state=present
 
 - name: Copy NextCloud config
-  template: src=nc-config.php dest=/srv/wordpress/
+  template: src=nc-config.php dest=/srv/nextcloud/
 
 - name: Change ownership of NextCloud installation
   file: path=/srv/nextcloud/ owner=nextcloud group=nextcloud state=directory recurse=yes
