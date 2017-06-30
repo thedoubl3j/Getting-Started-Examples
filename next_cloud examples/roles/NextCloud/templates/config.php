@@ -98,7 +98,7 @@ $CONFIG = array(
  *
  * Defaults to ``sqlite``
  */
-'dbtype' => 'sqlite',
+'dbtype' => 'MySQL',
 
 /**
  * Your host server name, for example ``localhost``, ``hostname``,
