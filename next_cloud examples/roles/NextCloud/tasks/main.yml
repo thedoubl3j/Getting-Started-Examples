@@ -1,6 +1,6 @@
 ---
 - name: Download Next Cloud
-  get_url: url= https://download.nextcloud.com/server/releases/nextcloud-12.0.0.tar.bz2
+  get_url: url=https://download.nextcloud.com/server/releases/nextcloud-12.0.0.tar.bz2
     dest: /tmp/
 
 - name: extract installer
