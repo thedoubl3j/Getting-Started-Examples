@@ -1,12 +1,13 @@
 ---
 - name: Install NextCloud, MySQL, Nginx, and PHP-FPM
   hosts: tag_Name_lookatme
-  remote_user: root
+  #remote_user: root
   # remote_user: user
   # become: yes
   # become_method: sudo
 
   roles:
+    - common
     - mariadb
     - nginx
     - php-fpm
