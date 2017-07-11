@@ -1,11 +1,15 @@
 ---
 - name: Installing nextcloud
-  hosts: tag_Name_lookatme
-  become_user: centos
+  hosts: tag_Name_
+  remote_user: centos
   become: true
 
+
   tasks:
-  - name:
+  - name: include Variables
+    include_vars: ../group_vars/tag_Name_lookatme
+
+  - name: EPEL
     yum: name=epel-release state=present
 
   - name: install tools
@@ -19,7 +23,7 @@
   - name: Template virtual nginx config file
     template:
       src: nextcloud.conf
-      dest: /etc/nginx/conf.d/
+      dest: /etc/nginx/nginx.conf
     notify: restart nginx
 
   - name: Install php-fpm and deps
@@ -97,7 +101,7 @@
     template:
       src: config.php
       dest: /usr/share/nginx/html/nextcloud/config/config.php
-      notify: restart nginx
+    notify: restart nginx
 
   - name: Create datadir
     file: dest=/opt/nextcloud/data owner=nginx group=nginx mode=0755 state=directory
@@ -107,3 +111,13 @@
 
   - name: Create NextCloud database user
     mysql_user: name={{ nc_db_user }} password={{ nc_db_password }} priv={{ nc_db_name }}.*:ALL host='localhost' state=present
+
+  handlers:
+  - name: restart php-fpm
+    service: name=php-fpm state=restarted
+
+  - name: restart mariadb
+    service: name=mariadb state=restarted
+
+  - name: restart nginx
+    service: name=nginx state=restarted
