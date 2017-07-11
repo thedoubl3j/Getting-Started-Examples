@@ -12,6 +12,13 @@
     - php-process
     - php-simplepie
     - php-xml
+    - php-json
+    - php-cli
+    - php-mcrypt
+    - php-pear
+    - php-pdo
+    - php-pecl-apcu
+    - php-pecl-apcu-devel
 
 - name: Disable default pool
   command: mv /etc/php-fpm.d/www.conf /etc/php-fpm.d/www.disabled creates=/etc/php-fpm.d/www.disabled

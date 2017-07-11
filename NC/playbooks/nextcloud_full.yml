@@ -1,0 +1,109 @@
+---
+- name: Installing nextcloud
+  hosts: tag_Name_lookatme
+  become_user: centos
+  become: true
+
+  tasks:
+  - name:
+    yum: name=epel-release state=present
+
+  - name: install tools
+    yum: name={{item}} state=present
+    with_items:
+      - unzip
+
+  - name: Install nginx
+    yum: name=nginx state=present
+
+  - name: Template virtual nginx config file
+    template:
+      src: nextcloud.conf
+      dest: /etc/nginx/conf.d/
+    notify: restart nginx
+
+  - name: Install php-fpm and deps
+    yum: name={{ item }} state=present
+    with_items:
+      - php
+      - php-fpm
+      - php-enchant
+      - php-IDNA_Convert
+      - php-mbstring
+      - php-mysql
+      - php-PHPMailer
+      - php-process
+      - php-simplepie
+      - php-xml
+      - php-json
+      - php-cli
+      - php-mcrypt
+      - php-pear
+      - php-pdo
+      - php-pecl-apcu
+      - php-pecl-apcu-devel
+
+  - name: Copy php-fpm configuration
+    template: src=www.conf dest=/etc/php-fpm.d/
+
+
+  - name: creating relative dirs
+    file:
+      path: /var/lib/php/session
+      owner: nginx
+      group: nginx
+      state: directory
+    notify:
+      - restart php-fpm
+      - restart nginx
+
+  - name: start services
+    service: name={{item}} state=started enabled=yes
+    with_items:
+      - php-fpm
+      - nginx
+
+  - name: Install MariaDB package
+    yum: name={{ item }} state=installed
+    with_items:
+      - mariadb-server
+      - MySQL-python
+      - libsemanage-python
+
+  - name: Create Mysql configuration file
+    template: src=my.cnf.j2 dest=/etc/my.cnf
+    notify:
+      - restart mariadb
+
+  - name: Create MariaDB log file
+    file: path=/var/log/mysqld.log state=touch owner=mysql group=mysql mode=0775
+
+  - name: Start MariaDB Service
+    service: name=mariadb state=started enabled=yes
+
+  - name: Download Next Cloud
+    get_url: url=https://download.nextcloud.com/server/releases/nextcloud-12.0.0.zip
+      dest=/tmp/
+
+  - name: extract installer
+    unarchive:
+      src: /tmp/nextcloud-12.0.0.zip
+      dest: /usr/share/nginx/html
+      remote_src: True
+      owner: nginx
+      group: nginx
+
+  - name: Template nextcloud config file
+    template:
+      src: config.php
+      dest: /usr/share/nginx/html/nextcloud/config/config.php
+      notify: restart nginx
+
+  - name: Create datadir
+    file: dest=/opt/nextcloud/data owner=nginx group=nginx mode=0755 state=directory
+
+  - name: Create NextCloud database
+    mysql_db: name={{ nc_db_name }} state=present
+
+  - name: Create NextCloud database user
+    mysql_user: name={{ nc_db_user }} password={{ nc_db_password }} priv={{ nc_db_name }}.*:ALL host='localhost' state=present
