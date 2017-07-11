@@ -12,6 +12,9 @@
   - name: EPEL
     yum: name=epel-release state=present
 
+  - name: EPEL
+    yum: name=https://mirror.webtatic.com/yum/el7/webtatic-release.rpm state=present
+
   - name: install tools
     yum: name={{item}} state=present
     with_items:
@@ -27,25 +30,26 @@
     notify: restart nginx
 
   - name: Install php-fpm and deps
-    yum: name={{ item }} state=present
+    yum: name={{ item }} state=latest
     with_items:
-      - php
-      - php-fpm
-      - php-enchant
-      - php-IDNA_Convert
-      - php-mbstring
-      - php-mysql
-      - php-PHPMailer
-      - php-process
-      - php-simplepie
-      - php-xml
-      - php-json
-      - php-cli
-      - php-mcrypt
-      - php-pear
-      - php-pdo
-      - php-pecl-apcu
-      - php-pecl-apcu-devel
+      #- php
+      - php70w-fpm
+      - php70w-gd
+      #- php-enchant
+      #- php-IDNA_Convert
+      - php70w-mbstring
+      - php70w-mysql
+      #- php-PHPMailer
+      #- php-process
+      #- php-simplepie
+      - php70w-xml
+      - php70w-json
+      - php70w-cli
+      - php70w-mcrypt
+      - php70w-pear
+      - php70w-pdo
+      - php70w-pecl-apcu
+      - php70w-pecl-apcu-devel
 
   - name: Copy php-fpm configuration
     template: src=www.conf dest=/etc/php-fpm.d/
