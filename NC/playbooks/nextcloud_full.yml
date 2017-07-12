@@ -52,7 +52,7 @@
       - php70w-pecl-apcu-devel
 
   - name: Copy php-fpm configuration
-    template: src=www.conf dest=/etc/php-fpm.d/
+    template: src=www.conf dest=/etc/php-fpm.d/www.conf
 
 
   - name: creating relative dirs
@@ -86,25 +86,31 @@
   - name: Create MariaDB log file
     file: path=/var/log/mysqld.log state=touch owner=mysql group=mysql mode=0775
 
+
   - name: Start MariaDB Service
     service: name=mariadb state=started enabled=yes
 
-  - name: Download Next Cloud
-    get_url: url=https://download.nextcloud.com/server/releases/nextcloud-12.0.0.zip
-      dest=/tmp/
+  #- name: Download Next Cloud
+  #  get_url: url=https://download.nextcloud.com/server/releases/nextcloud-12.0.0.zip
+  #    dest=/tmp/ creates=/tmp/nextcloud-12.0.0.zip
 
   - name: extract installer
     unarchive:
-      src: /tmp/nextcloud-12.0.0.zip
-      dest: /usr/share/nginx/html
+      src: https://download.nextcloud.com/server/releases/nextcloud-12.0.0.zip
+      dest: /usr/share/nginx
       remote_src: True
       owner: nginx
       group: nginx
+      creates: /usr/share/nginx/nextcloud/index.php
+
+  - name: creating the nextcloud log file
+    file: path=/var/log/nextcloud.log state=touch owner=nginx group=nginx mode=0775
+
 
   - name: Template nextcloud config file
     template:
       src: config.php
-      dest: /usr/share/nginx/html/nextcloud/config/config.php
+      dest: /usr/share/nginx/nextcloud/config/config.php
     notify: restart nginx
 
   - name: Create datadir
