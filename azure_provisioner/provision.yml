@@ -1,0 +1,20 @@
+---
+- hosts: localhost
+  connection: local
+  gather_facts: no
+  tasks:
+    - name: Create Azure Deploy
+      azure_rm_deployment:
+        state: present
+        resource_group_name: [resource_name]
+        subscription_id: [sub_id_here]
+        client_id: [HERE_OR_ENV]
+        secret: [HERE_OR_ENV]
+        tenant: [HERE_OR_ENV]
+        parameters:
+          adminUsername:
+            value: ansibleuser
+          sshKeyData:
+            value: [pub_key_here]
+        template_link: '[link to your template]'
+      register: azure
